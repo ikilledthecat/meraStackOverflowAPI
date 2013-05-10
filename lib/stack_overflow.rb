@@ -83,7 +83,7 @@ module API
       result["items"]
     end
 
-    def self.get_tags(option={})
+    def self.get_tags(options={})
       page = options[:page] || 1
       pagesize = options[:pagesize] || 30
       result=get(@@URL_START + "tags?key=#{@@API_KEY}&page=#{page}&page_size=#{pagesize}&order=desc&sort=popular" + @@URL_END)
@@ -91,10 +91,15 @@ module API
       result["items"]
     end
 
-    def self.get_tags_synonyms
-      result = get(@@URL_START + "tags/synonyms?key=#{@@API_KEY}&order=desc&sort=popular" + @@URL_END)
-      return nil if result["items"].nil?
-      result["items"]
+    def self.get_tag_synonyms(tag)
+      result = get(@@URL_START + "tags/#{tag}/synonyms?key=#{@@API_KEY}&order=desc&sort=creation" + @@URL_END)
+      ans = Array.new
+      syn = result["items"]
+      return nil if syn.nil?
+      syn.each{ |t|
+	ans.push(t["from_tag"])
+      }
+      return ans.join(" ")
     end
 
   end
